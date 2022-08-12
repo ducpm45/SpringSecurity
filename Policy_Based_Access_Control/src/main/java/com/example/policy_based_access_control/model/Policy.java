@@ -1,6 +1,8 @@
 package com.example.policy_based_access_control.model;
 
 
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Entity
+@ToString
 public class Policy implements Serializable {
 
     public static Policy create(
@@ -52,6 +55,7 @@ public class Policy implements Serializable {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @ToString.Exclude
     private Map<String,Condition> conditions = new HashMap<>();
 
     // AllowAccess returns true if the policy effect is allow, otherwise false.

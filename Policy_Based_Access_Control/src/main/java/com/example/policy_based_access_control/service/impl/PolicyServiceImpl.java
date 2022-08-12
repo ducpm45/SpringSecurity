@@ -5,6 +5,7 @@ import com.example.policy_based_access_control.model.Request;
 import com.example.policy_based_access_control.repository.PolicyRepository;
 import com.example.policy_based_access_control.service.ExpressionMatcherService;
 import com.example.policy_based_access_control.service.PolicyService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
+@Slf4j
 public class PolicyServiceImpl implements PolicyService {
 
     private final PolicyRepository repository;
@@ -40,10 +42,10 @@ public class PolicyServiceImpl implements PolicyService {
 
         boolean allowed = false;
 
-        List<Policy> policies= repository.findAll();
-
+        List<Policy> policies= findAll();
         // Iterate through all policies
         for (Policy policy: policies) {
+            log.info("policy: {}", policy);
             if(null != policy.getAccessPeriod()) {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                 String accessPeriod = policy.getAccessPeriod();
@@ -52,12 +54,15 @@ public class PolicyServiceImpl implements PolicyService {
                 String currentTime = request.getCurrentTime();
                 LocalDateTime requestTime = LocalDateTime.parse(currentTime, formatter);
 
-                return requestTime.isBefore(accessPeriodTime);
+                if(!requestTime.isBefore(accessPeriodTime)) {
+                    continue;
+                }
             }
             // Does the action match with one of the policy actions?
             // This is the first check because usually actions are a superset of get|update|delete|set
             // and thus match faster.
             if(!matcher.Matches(policy.getActions(), request.getAction())){
+                log.info("policy actions: {}, request action: {}", policy.getActions(), request.getAction());
                 // no, continue to next policy
                 continue;
             }
@@ -66,12 +71,14 @@ public class PolicyServiceImpl implements PolicyService {
             // There are usually less subjects than resources which is why this is checked
             // before checking for resources.
             if(!matcher.Matches(policy.getSubjects(),request.getSubject())){
+                log.info("policy subject: {}, request subject: {}", policy.getSubjects(), request.getSubject());
                 // no, continue to next policy
                 continue;
             }
 
             // Does the resource match with one of the policy resources?
             if(!matcher.Matches(policy.getResources(), request.getResource())){
+                log.info("policy resources: {}, request resources: {}", policy.getResources(), request.getResource());
                 // no, continue to next policy
                 continue;
             }

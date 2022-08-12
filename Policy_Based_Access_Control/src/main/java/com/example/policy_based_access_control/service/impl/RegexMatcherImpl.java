@@ -80,6 +80,8 @@ public class RegexMatcherImpl implements ExpressionMatcherService {
            if (!isRegEx(expression))
            {
                if (expression.equals(searchString)) {
+                   log.info("expression: {}", expression);
+                   log.info("searchString: {}", searchString);
                    return true;
                }
 

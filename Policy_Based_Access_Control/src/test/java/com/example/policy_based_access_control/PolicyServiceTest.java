@@ -1,6 +1,7 @@
 package com.example.policy_based_access_control;
 
 import com.example.policy_based_access_control.model.*;
+import com.example.policy_based_access_control.repository.PolicyRepository;
 import com.example.policy_based_access_control.service.PolicyService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -24,6 +26,8 @@ import static org.hamcrest.Matchers.equalTo;
 public class PolicyServiceTest {
 
     private PolicyService policyService;
+    @Autowired
+    private PolicyRepository policyRepository;
 
 @Autowired
     public void PolicyServiceImpl(PolicyService service){
@@ -210,13 +214,19 @@ public class PolicyServiceTest {
         Request request = new Request(){
             {
                 subject="users:peter";
-                resource="resources:document:1234";
-                action="update";
-                currentTime="2022-08-11 14:17";
+                resource="resources:articles:12";
+                action="update2";
+                currentTime="2022-08-12 14:17";
             }
         };
         request.getContext().setProperty("resourceOwner","users:peter");
-        assertThat(policyService.isAllowed(request), equalTo(true));
+        assertThat(policyService.isAllowed(request), equalTo(false));
+    }
+
+    @Test
+    public void findAll() {
+        List<Policy> policyList = policyRepository.findAll();
+        policyList.forEach(policy -> log.info("policy: {}", policy));
     }
 }
 
