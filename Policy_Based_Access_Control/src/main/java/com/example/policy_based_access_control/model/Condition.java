@@ -14,8 +14,7 @@ import java.util.Properties;
         use = JsonTypeInfo.Id.NAME,
         property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = EqualsSubjectCondition.class, name = "EqualsSubjectCondition"),
-        @JsonSubTypes.Type(value = StringEqualCondition.class, name = "StringEqualCondition"),
+        @JsonSubTypes.Type(value = EqualsSubjectCondition.class, name = "EqualsSubjectCondition")
 })
 
 @Entity
