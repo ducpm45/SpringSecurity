@@ -1,10 +1,13 @@
 package com.example.policy_based_access_control.model;
 
+import lombok.ToString;
+
 import java.util.Properties;
 
 /**
  * Created by igor on 2017-07-21.
  */
+@ToString
 public class Request {
     // Resource is the resource that access is requested to.
     protected String resource;

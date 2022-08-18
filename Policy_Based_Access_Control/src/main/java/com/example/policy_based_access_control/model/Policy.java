@@ -20,7 +20,8 @@ public class Policy implements Serializable {
             List<String> subjects,
             List<String> resources,
             List<String> actions,
-            String accessPeriod,
+            String fromTime,
+            String toTime,
             String effect){
 
         Policy policy = new Policy();
@@ -31,7 +32,8 @@ public class Policy implements Serializable {
         policy.effect = effect;
         policy.resources = resources;
         policy.actions = actions;
-        policy.accessPeriod = accessPeriod;
+        policy.fromTime = fromTime;
+        policy.toTime = toTime;
         return policy;
     }
 
@@ -43,7 +45,8 @@ public class Policy implements Serializable {
     @ElementCollection
     private List<String> subjects = new ArrayList<>();
 
-    private String accessPeriod;
+    private String fromTime;
+    private String toTime;
     private String effect;
     @ElementCollection
     private List<String> resources = new ArrayList<>();
@@ -105,12 +108,20 @@ public class Policy implements Serializable {
         this.subjects = subjects;
     }
 
-    public String getAccessPeriod() {
-        return accessPeriod;
+    public String getFromTime() {
+        return fromTime;
     }
 
-    public void setAccessPeriod(String accessPeriod) {
-        this.accessPeriod = accessPeriod;
+    public void setFromTime(String fromTime) {
+        this.fromTime = fromTime;
+    }
+
+    public String getToTime() {
+        return toTime;
+    }
+
+    public void setToTime(String toTime) {
+        this.toTime = toTime;
     }
 
     public String getEffect() {

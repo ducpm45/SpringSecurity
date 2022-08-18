@@ -46,15 +46,28 @@ public class PolicyServiceImpl implements PolicyService {
         // Iterate through all policies
         for (Policy policy: policies) {
             log.info("policy: {}", policy);
-            if(null != policy.getAccessPeriod()) {
+            if(null != policy.getFromTime()) {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-                String accessPeriod = policy.getAccessPeriod();
-                LocalDateTime accessPeriodTime = LocalDateTime.parse(accessPeriod, formatter);
+                String fromTime = policy.getFromTime();
+                LocalDateTime accessFromTime = LocalDateTime.parse(fromTime, formatter);
 
                 String currentTime = request.getCurrentTime();
-                LocalDateTime requestTime = LocalDateTime.parse(currentTime, formatter);
+                LocalDateTime requestCurrentTime = LocalDateTime.parse(currentTime, formatter);
 
-                if(!requestTime.isBefore(accessPeriodTime)) {
+                if(!requestCurrentTime.isAfter(accessFromTime)) {
+                    continue;
+                }
+            }
+
+            if(null != policy.getToTime()) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                String toTime = policy.getToTime();
+                LocalDateTime accessToTime = LocalDateTime.parse(toTime, formatter);
+
+                String currentTime = request.getCurrentTime();
+                LocalDateTime requestCurrentTime = LocalDateTime.parse(currentTime, formatter);
+
+                if(!requestCurrentTime.isBefore(accessToTime)) {
                     continue;
                 }
             }
